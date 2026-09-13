@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>target-list — варианты окна</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#f0be7c; --accent-soft:#ffd6a3;
+  --text:#f2ede4; --muted:rgba(242,237,228,.56); --faint:rgba(242,237,228,.3);
+  --s1:rgba(255,255,255,.045); --s2:rgba(255,255,255,.08);
+  --stroke:rgba(255,255,255,.09); --stroke2:rgba(255,255,255,.16);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:40px 20px 80px; background:#15121b; color:var(--text);
+  font-family:'Quicksand',system-ui,sans-serif;
+  display:flex; flex-direction:column; align-items:center; gap:46px;
+}
+.ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sprite{position:absolute;width:0;height:0}
+h1{font-size:1.3rem; margin:0 0 6px; font-weight:700}
+.lead{color:var(--muted); font-size:.92rem; margin:0 0 10px; text-align:center; max-width:520px; line-height:1.5}
+.case{display:flex; flex-direction:column; align-items:center; gap:14px; width:100%}
+.badge{
+  display:inline-flex; align-items:center; gap:9px; font-weight:700; font-size:1rem;
+  background:var(--accent); color:#241a10; padding:7px 16px; border-radius:99px;
+}
+.hint{color:var(--faint); font-size:.84rem; margin:0}
+
+.win{background:linear-gradient(180deg,#221e2b,#18151f); border:1px solid var(--stroke2); border-radius:20px; box-shadow:0 30px 70px rgba(0,0,0,.5); overflow:hidden}
+.win-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--stroke)}
+.win-head h2{margin:0; font-size:1.08rem}
+.xbtn{display:grid;place-items:center;width:28px;height:28px;border:0;background:none;color:var(--faint);border-radius:8px;cursor:pointer}
+.xbtn:hover{background:var(--s2); color:var(--text)}
+.win-foot{display:flex; gap:10px; align-items:center; padding:13px 20px; border-top:1px solid var(--stroke)}
+.sp{flex:1}
+.btn{font-family:inherit;font-size:.92rem;font-weight:600;border:1px solid var(--stroke);border-radius:12px;padding:9px 16px;cursor:pointer;color:var(--text);background:var(--s1);display:inline-flex;align-items:center;gap:7px}
+.btn:hover{background:var(--s2)}
+.btn-go{background:var(--accent);border-color:transparent;color:#241a10}
+.btn-go:hover{background:var(--accent-soft)}
+.seg{display:flex;gap:3px;padding:3px;border-radius:11px;background:rgba(0,0,0,.22)}
+.seg button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-family:inherit;font-weight:600;font-size:.84rem;padding:7px 12px;border-radius:9px;cursor:pointer}
+.seg button.on{background:var(--accent);color:#241a10}
+.dots{display:flex;gap:8px}
+.dot{width:22px;height:22px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;color:#241a10}
+.dot .ic{width:12px;height:12px;stroke-width:3;opacity:0}
+.dot.on{box-shadow:0 0 0 2px #1b1822,0 0 0 4px rgba(255,255,255,.7)}
+.dot.on .ic{opacity:1}
+.tick{width:18px;height:18px;flex:none;border:1.5px solid rgba(255,255,255,.22);border-radius:6px;display:grid;place-items:center}
+.tick.on{background:var(--accent);border-color:var(--accent);color:#241a10}
+.tick .ic{width:11px;height:11px;stroke-width:2.6}
+.steprow{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:10px;font-size:.9rem}
+.steprow:hover{background:var(--s1)}
+.add{display:flex;align-items:center;gap:11px;padding:8px 10px;color:var(--faint);font-size:.9rem}
+.add .tick{border-style:dashed}
+
+.v1{width:min(500px,100%)}
+.v1 .title-in{padding:18px 20px 14px; border-bottom:1px solid var(--stroke); display:flex; gap:12px; align-items:center}
+.v1 .title-in input{flex:1;border:0;background:none;outline:none;font-family:inherit;font-size:1.2rem;font-weight:700;color:var(--text)}
+.v1 .title-in input::placeholder{color:var(--faint)}
+.v1 .note{padding:12px 20px; border-bottom:1px solid var(--stroke); color:var(--muted); font-size:.88rem}
+.v1 .row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 20px;border-bottom:1px solid var(--stroke);min-height:52px}
+.v1 .row > span{font-size:.9rem;color:var(--muted)}
+.v1 .val{display:flex;align-items:center;gap:9px;font-size:.9rem}
+.v1 .icobox{width:34px;height:34px;border-radius:10px;background:var(--s1);border:1px solid var(--stroke);display:grid;place-items:center;color:var(--accent)}
+.v1 .steps{padding:10px 12px}
+
+.v2{width:min(500px,100%); background:#f6f1e9; border:1px solid rgba(0,0,0,.08); color:#2c2530; border-radius:20px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.v2 .h{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(0,0,0,.08)}
+.v2 .h h2{margin:0;font-size:1.08rem}
+.v2 .xbtn{color:rgba(44,37,48,.4)} .v2 .xbtn:hover{background:rgba(0,0,0,.06);color:#2c2530}
+.v2 .body{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.v2 .frow{display:flex;gap:12px;align-items:center}
+.v2 .icobox{width:46px;height:46px;border-radius:14px;background:#ece4d7;border:1px solid rgba(0,0,0,.07);display:grid;place-items:center;color:#b5813c}
+.v2 input, .v2 .fake{
+  width:100%;font-family:inherit;font-size:.95rem;color:#2c2530;background:#fff;
+  border:1px solid rgba(0,0,0,.12);border-radius:11px;padding:11px 13px;outline:none;
+}
+.v2 .cap{font-size:.78rem;color:rgba(44,37,48,.5);font-weight:600;margin-bottom:6px;display:block}
+.v2 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.v2 .seg{background:#e7dfd2}
+.v2 .seg button{color:rgba(44,37,48,.55)}
+.v2 .seg button.on{background:#2c2530;color:#f6f1e9}
+.v2 .tick{border-color:rgba(0,0,0,.25)}
+.v2 .tick.on{background:#2c2530;border-color:#2c2530;color:#f6f1e9}
+.v2 .steprow:hover{background:rgba(0,0,0,.04)}
+.v2 .add{color:rgba(44,37,48,.45)}
+.v2 .f{display:flex;gap:10px;align-items:center;padding:13px 20px;border-top:1px solid rgba(0,0,0,.08)}
+.v2 .btn{background:#fff;border-color:rgba(0,0,0,.12);color:#2c2530}
+.v2 .btn-go{background:#2c2530;color:#f6f1e9;border-color:transparent}
+.v2 .dot.on{box-shadow:0 0 0 2px #f6f1e9,0 0 0 4px #2c2530}
+
+.v3{width:min(640px,100%)}
+.v3 .cols{display:grid;grid-template-columns:1fr 208px}
+.v3 .main{padding:18px 20px;border-right:1px solid var(--stroke)}
+.v3 .main input{width:100%;border:0;background:none;outline:none;font-family:inherit;font-size:1.2rem;font-weight:700;color:var(--text)}
+.v3 .main input::placeholder{color:var(--faint)}
+.v3 .main .note{margin:6px 0 16px;color:var(--muted);font-size:.88rem}
+.v3 .side{padding:16px 16px;display:flex;flex-direction:column;gap:16px;background:rgba(0,0,0,.14)}
+.v3 .scap{font-size:.75rem;color:var(--faint);letter-spacing:.03em;margin-bottom:7px;display:block}
+.v3 .pill{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:10px;background:var(--s1);border:1px solid var(--stroke);font-size:.86rem;color:var(--muted);cursor:pointer}
+.v3 .pill:hover{background:var(--s2);color:var(--text)}
+.v3 .segv{display:flex;flex-direction:column;gap:4px}
+.v3 .icobox{width:42px;height:42px;border-radius:13px;background:var(--s1);border:1px solid var(--stroke);display:grid;place-items:center;color:var(--accent)}
+
+.v4{width:min(500px,100%)}
+.v4 .big{padding:22px 20px 8px}
+.v4 .big input{width:100%;border:0;background:none;outline:none;font-family:inherit;font-size:1.45rem;font-weight:700;color:var(--text)}
+.v4 .big input::placeholder{color:rgba(242,237,228,.22)}
+.v4 .big .note{margin:8px 0 0;color:var(--muted);font-size:.9rem}
+.v4 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px 18px}
+.v4 .chip{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:99px;
+  background:var(--s1);border:1px solid var(--stroke);color:var(--muted);
+  font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;
+}
+.v4 .chip:hover{background:var(--s2);color:var(--text);border-color:var(--stroke2)}
+.v4 .chip.set{background:rgba(240,190,124,.14);border-color:rgba(240,190,124,.3);color:var(--accent-soft)}
+.v4 .chip .sw{width:13px;height:13px;border-radius:50%;background:#8fb3d9}
+.v4 .steps{padding:6px 12px 14px;border-top:1px solid var(--stroke)}
+</style>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true">
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5.2 12.6 4.6 4.6L18.8 7"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9.4 17.2V5.8l9.2-1.9v11.4"/><circle cx="6.9" cy="17.4" r="2.5"/><circle cx="16.1" cy="15.4" r="2.5"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9.4 6.6h10.4M9.4 12h10.4M9.4 17.4h10.4"/><circle cx="5" cy="6.6" r="1.1" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="5" cy="17.4" r="1.1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-hash" viewBox="0 0 24 24"><path d="M4.4 9.2h15.2M4.4 14.8h15.2M10.2 4.2 8.4 19.8M15.6 4.2l-1.8 15.6"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.6" y="5.4" width="16.8" height="15" rx="2.6"/><path d="M8.2 3.2v4.2M15.8 3.2v4.2M3.6 10.4h16.8"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.4 7h15.2M9.6 7V4.8h4.8V7M6.6 7l.9 12.4h9l.9-12.4M10.4 10.4v6.4M13.6 10.4v6.4"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.4a8.6 8.6 0 0 0 0 17.2c1.1 0 1.9-.8 1.9-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8h1.4a4.3 4.3 0 0 0 4.3-4.3c0-3.8-3.8-6.9-8.4-6.9z"/><circle cx="7.6" cy="11.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="10.4" cy="7.8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15" cy="8.4" r="1.1" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<div style="text-align:center">
+  <h1>Какое окно ставим в target-list?</h1>
+  <p class="lead">Четыре разных подхода. Скажи номер — вкручу его в сайт и доведу до ума. Можно и вперемешку: «шапка как в 4, настройки как в 1».</p>
+</div>
+
+<section class="case">
+  <span class="badge">1 · Строки настроек</span>
+  <p class="hint">Каждая настройка — отдельная строка: слева название, справа значение. Предсказуемо и очень аккуратно.</p>
+  <div class="win v1">
+    <div class="win-head"><h2>Новая цель</h2><button class="xbtn"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="title-in"><input placeholder="Название цели" value="Научиться играть на гитаре"></div>
+    <div class="note">хочу сыграть песню целиком к Новому году</div>
+    <div class="row"><span>Иконка</span><div class="val"><span class="icobox"><svg class="ic"><use href="#i-music"/></svg></span></div></div>
+    <div class="row"><span>Как считаем</span><div class="val"><div class="seg"><button class="on"><svg class="ic"><use href="#i-list"/></svg> Шаги</button><button><svg class="ic"><use href="#i-hash"/></svg> Счётчик</button></div></div></div>
+    <div class="row"><span>Дедлайн</span><div class="val"><svg class="ic" style="color:rgba(242,237,228,.3)"><use href="#i-calendar"/></svg> 31.12.2026</div></div>
+    <div class="row"><span>Цвет</span><div class="val dots">
+      <button class="dot" style="background:#e9b87a"><svg class="ic"><use href="#i-check"/></svg></button>
+      <button class="dot" style="background:#9ac9a8"><svg class="ic"><use href="#i-check"/></svg></button>
+      <button class="dot on" style="background:#8fb3d9"><svg class="ic"><use href="#i-check"/></svg></button>
+      <button class="dot" style="background:#b3a6d6"><svg class="ic"><use href="#i-check"/></svg></button>
+      <button class="dot" style="background:#d99aa4"><svg class="ic"><use href="#i-check"/></svg></button>
+    </div></div>
+    <div class="steps">
+      <div class="steprow"><span class="tick on"><svg class="ic"><use href="#i-check"/></svg></span> Купить гитару</div>
+      <div class="steprow"><span class="tick"></span> Выучить 5 аккордов</div>
+      <div class="add"><span class="tick"><svg class="ic" style="width:11px;height:11px"><use href="#i-plus"/></svg></span> добавить шаг</div>
+    </div>
+    <div class="win-foot"><button class="xbtn" style="color:#dd8f92"><svg class="ic"><use href="#i-trash"/></svg></button><span class="sp"></span><button class="btn">Отмена</button><button class="btn btn-go">Сохранить</button></div>
+  </div>
+</section>
+
+<section class="case">
+  <span class="badge">2 · Светлый лист</span>
+  <p class="hint">Окно — лист бумаги поверх тёмного сайта. Максимальный контраст, читается лучше всего.</p>
+  <div class="v2">
+    <div class="h"><h2>Новая цель</h2><button class="xbtn"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="body">
+      <div class="frow">
+        <span class="icobox"><svg class="ic" style="width:22px;height:22px"><use href="#i-music"/></svg></span>
+        <input value="Научиться играть на гитаре" placeholder="Название цели">
+      </div>
+      <input placeholder="зачем тебе это?" value="хочу сыграть песню целиком к Новому году">
+      <div class="two">
+        <div><span class="cap">Как считаем</span>
+          <div class="seg"><button class="on"><svg class="ic"><use href="#i-list"/></svg> Шаги</button><button><svg class="ic"><use href="#i-hash"/></svg> Счётчик</button></div>
+        </div>
+        <div><span class="cap">Дедлайн</span><div class="fake">31.12.2026</div></div>
+      </div>
+      <div>
+        <span class="cap">Шаги</span>
+        <div class="steprow"><span class="tick on"><svg class="ic"><use href="#i-check"/></svg></span> Купить гитару</div>
+        <div class="steprow"><span class="tick"></span> Выучить 5 аккордов</div>
+        <div class="add"><span class="tick" style="border-style:dashed"><svg class="ic" style="width:11px;height:11px"><use href="#i-plus"/></svg></span> добавить шаг</div>
+      </div>
+      <div><span class="cap">Цвет</span><div class="dots">
+        <button class="dot" style="background:#e9b87a"><svg class="ic"><use href="#i-check"/></svg></button>
+        <button class="dot on" style="background:#9ac9a8"><svg class="ic"><use href="#i-check"/></svg></button>
+        <button class="dot" style="background:#8fb3d9"><svg class="ic"><use href="#i-check"/></svg></button>
+        <button class="dot" style="background:#b3a6d6"><svg class="ic"><use href="#i-check"/></svg></button>
+        <button class="dot" style="background:#d99aa4"><svg class="ic"><use href="#i-check"/></svg></button>
+      </div></div>
+    </div>
+    <div class="f"><span class="sp"></span><button class="btn">Отмена</button><button class="btn btn-go">Сохранить</button></div>
+  </div>
+</section>
+
+<section class="case">
+  <span class="badge">3 · Две колонки</span>
+  <p class="hint">Слева — суть цели и шаги, справа — панель свойств. Как в трекерах задач; удобно, когда шагов много.</p>
+  <div class="win v3">
+    <div class="win-head"><h2>Новая цель</h2><button class="xbtn"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="cols">
+      <div class="main">
+        <input value="Научиться играть на гитаре" placeholder="Название цели">
+        <p class="note">хочу сыграть песню целиком к Новому году</p>
+        <div class="steprow"><span class="tick on"><svg class="ic"><use href="#i-check"/></svg></span> Купить гитару</div>
+        <div class="steprow"><span class="tick"></span> Выучить 5 аккордов</div>
+        <div class="steprow"><span class="tick"></span> Играть по 20 минут в день</div>
+        <div class="add"><span class="tick" style="border-style:dashed"><svg class="ic" style="width:11px;height:11px"><use href="#i-plus"/></svg></span> добавить шаг</div>
+      </div>
+      <div class="side">
+        <div><span class="scap">иконка</span><span class="icobox"><svg class="ic" style="width:20px;height:20px"><use href="#i-music"/></svg></span></div>
+        <div><span class="scap">как считаем</span>
+          <div class="segv">
+            <div class="pill" style="background:rgba(240,190,124,.14);border-color:rgba(240,190,124,.3);color:#ffd6a3"><svg class="ic"><use href="#i-list"/></svg> Шаги</div>
+            <div class="pill"><svg class="ic"><use href="#i-hash"/></svg> Счётчик</div>
+          </div>
+        </div>
+        <div><span class="scap">дедлайн</span><div class="pill"><svg class="ic"><use href="#i-calendar"/></svg> 31.12.2026</div></div>
+        <div><span class="scap">цвет</span><div class="dots" style="flex-wrap:wrap">
+          <button class="dot" style="background:#e9b87a"><svg class="ic"><use href="#i-check"/></svg></button>
+          <button class="dot" style="background:#9ac9a8"><svg class="ic"><use href="#i-check"/></svg></button>
+          <button class="dot" style="background:#8fb3d9"><svg class="ic"><use href="#i-check"/></svg></button>
+          <button class="dot on" style="background:#b3a6d6"><svg class="ic"><use href="#i-check"/></svg></button>
+          <button class="dot" style="background:#d99aa4"><svg class="ic"><use href="#i-check"/></svg></button>
+        </div></div>
+      </div>
+    </div>
+    <div class="win-foot"><span class="sp"></span><button class="btn">Отмена</button><button class="btn btn-go">Создать цель</button></div>
+  </div>
+</section>
+
+<section class="case">
+  <span class="badge">4 · Чипсы</span>
+  <p class="hint">Сначала только название крупным шрифтом, всё остальное — кнопки-чипсы под ним, раскрываются по клику. Минимум всего.</p>
+  <div class="win v4">
+    <div class="win-head"><h2>Новая цель</h2><button class="xbtn"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="big">
+      <input value="Научиться играть на гитаре" placeholder="Чего хочешь добиться?">
+      <p class="note">хочу сыграть песню целиком к Новому году</p>
+    </div>
+    <div class="chips">
+      <button class="chip set"><svg class="ic"><use href="#i-music"/></svg> иконка</button>
+      <button class="chip set"><svg class="ic"><use href="#i-list"/></svg> шаги</button>
+      <button class="chip set"><svg class="ic"><use href="#i-calendar"/></svg> 31 декабря</button>
+      <button class="chip"><span class="sw"></span> цвет</button>
+    </div>
+    <div class="steps">
+      <div class="steprow"><span class="tick on"><svg class="ic"><use href="#i-check"/></svg></span> Купить гитару</div>
+      <div class="steprow"><span class="tick"></span> Выучить 5 аккордов</div>
+      <div class="add"><span class="tick" style="border-style:dashed"><svg class="ic" style="width:11px;height:11px"><use href="#i-plus"/></svg></span> добавить шаг</div>
+    </div>
+    <div class="win-foot"><span class="sp"></span><button class="btn">Отмена</button><button class="btn btn-go">Сохранить</button></div>
+  </div>
+</section>
+
+</body>
+</html>
